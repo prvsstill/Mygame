@@ -26,6 +26,7 @@ screen = pygame.display.set_mode(
         screen_setting.height
     )
 )
+pygame.display.set_caption("电棍笑传")
 screen.fill(screen_setting.bg_color)
 clock = pygame.time.Clock()
 
