@@ -17,6 +17,7 @@ class Weapon:
         self.rect = self.image.get_rect()
         self.screen = screen
         self.rect.midbottom = ship.rect.midtop
+        self.is_atomic_bomb = (path == "images/atomic_bomb.png")
 
     def weapon_fire(self):
         self.rect.y -= self.speed
