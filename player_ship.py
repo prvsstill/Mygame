@@ -49,3 +49,9 @@ class Ship:
             self.rect.x -= self.speed
         if self.moving_right and self.rect.right < self.screen_rect.right:
             self.rect.x += self.speed
+
+    def hit(self, bullet):
+        if self.rect.left <= bullet.rect.centerx <= self.rect.right\
+            and self.rect.top <= bullet.rect.centery <= self.rect.bottom:
+            self.hp -= 30
+            return True
