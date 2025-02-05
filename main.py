@@ -3,6 +3,8 @@ import sys
 from setting import MainSettings
 from player_ship import Ship
 from weapon import Weapon
+from enemy_ship import EnemyShip
+import time
 
 # 初始化
 pygame.init()
@@ -37,6 +39,10 @@ clock = pygame.time.Clock()
 # 玩家
 ship = Ship(screen)
 bullet_list = []
+enemy_bullet_list = []
+
+# 敌人
+dingdong = EnemyShip(screen, ship)
 
 # 文字
 text_font = pygame.font.SysFont(None, 36)
@@ -65,6 +71,7 @@ otto.image = pygame.transform.scale(
     )
 )
 is_waao_played = False
+dingdong_played = False
 
 # 主程序及循环
 
@@ -89,10 +96,10 @@ while True:
                 )
                 bullet_list.append(bullet)
             elif event.key == pygame.K_k and not ship.dead:
-                if ship.mp >= 10:
-                    ship.mp -= 10
+                if ship.mp >= 30:
+                    ship.mp -= 30
                     bullet = Weapon(
-                        ship, "images/atomic_bomb.png", screen, speed=1
+                        ship, "images/atomic_bomb.png", screen, speed=1, ap=100
                     )
                     bullet_list.append(bullet)
                     sound_atomic_bomb.play()
@@ -109,10 +116,43 @@ while True:
                 ship.moving_right = False
 
     ship.move_ship()
+    dingdong.move()
     screen.fill(screen_setting.bg_color)
+    ship.place_ship()
+    dingdong.place()
+    dingdong.victory(ship)
+
+    if dingdong.rect.x == ship.rect.x:
+        enemy_bullet_list.append(Weapon(dingdong, "images/bullet.png", screen))
+
+    for enemy_bullet in enemy_bullet_list:
+        screen.blit(enemy_bullet.image, enemy_bullet.rect)
+        enemy_bullet.rect.y += 1
+
     screen.blit(text_hp, text_hp_rect)
     screen.blit(text_mp, text_mp_rect)
-    ship.place_ship()
+
+    if dingdong.is_dead:
+        enemy_bullet_list.clear()
+        screen.blit(
+            pygame.font.SysFont(None, 100).render(
+                "You win", True, (255, 0, 0)
+            ),(600, 300)
+        )
+        if not dingdong_played:
+            time.sleep(0.5)
+            pygame.mixer.Sound("audio/win.wav").play()
+            dingdong_played = True
+
+    for bullet in bullet_list:
+        if dingdong.hit(bullet):
+            bullet_list.remove(bullet)
+
+    for bullet in enemy_bullet_list:
+        if ship.hit(bullet):
+            enemy_bullet_list.remove(bullet)
+
+
     for bullet in bullet_list:
         screen.blit(bullet.image, bullet.rect)
         bullet.weapon_fire()
@@ -121,9 +161,13 @@ while True:
         if bullet.is_atomic_bomb:
             bullet.speed += 0.1
 
+    if ship.hit(dingdong):
+        ship.hp = 0
+        ship.dead = True
+
     text_hp = text_font.render("HP: " + str(ship.hp), True, text_color)
     text_mp = text_font.render("MP: " + str(ship.mp), True, text_color)
-    if ship.hp <= 0:
+    if ship.hp <= 0 or ship.dead:
         otto.rect.center = screen_rect.center
         otto.place_ship()
         ship.dead = True
