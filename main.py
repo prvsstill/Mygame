@@ -81,6 +81,30 @@ otto.image = pygame.transform.scale(
 is_waao_played = False
 dingdong_played = False
 
+# 开始游戏前
+
+unstart = True
+
+while unstart:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            sys.exit()
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            unstart = False
+
+    start_font = pygame.font.SysFont(None, 100)
+    start_button = start_font.render(
+        "Left Click Mouse to start!", True, (0, 0, 0)
+    )
+    start_rect = start_button.get_rect()
+    start_rect.center = screen.get_rect().center
+
+    screen.fill(screen_setting.bg_color)
+    screen.blit(start_button, start_rect)
+    pygame.display.flip()
+
+
+
 # 主程序及循环
 
 # pygame.mixer.music.play()
@@ -173,7 +197,7 @@ while True:
 
     text_hp = text_font.render("HP: " + str(ship.hp), True, text_color)
     text_mp = text_font.render("MP: " + str(ship.mp), True, text_color)
-    if ship.hp <= 0 or ship.dead:
+    if (ship.hp <= 0 or ship.dead) and not dingdong.is_dead:
         otto.rect.center = screen_rect.center
         otto.place_ship()
         ship.dead = True

@@ -34,10 +34,10 @@ class EnemyShip:
 
     def move(self):
         if not self.is_dead:
-            if 5 >= self.player.rect.centerx - self.rect.centerx >= -50 \
+            if 3 >= self.player.rect.centerx - self.rect.centerx >= -50 \
                     and self.rect.x <= self.screen_rect.right - 75:
                 self.rect.x += 3
-            elif -5 <= self.player.rect.centerx - self.rect.centerx <= 50 \
+            elif -3 <= self.player.rect.centerx - self.rect.centerx <= 50 \
                     and self.rect.x >= self.screen_rect.left + 75:
                 self.rect.x -= 3
             else:
