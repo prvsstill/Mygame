@@ -13,13 +13,13 @@ class EnemyShip:
         self.screen = screen
         self.screen_rect = screen.get_rect()
 
-        self.image = pygame.image.load("images/叮咚鸡.jpg")
+        self.image = pygame.image.load("images/耄耋.png")
         self.rect = self.image.get_rect()
 
         self.player = player
-        self.bullet = weapon.Weapon(self, "images/bullet.png", screen)
+        self.bullet = weapon.Weapon(self, "images/叮咚鸡.png", screen)
         self.bullet_rect = self.bullet.image.get_rect()
-        self.bullet_rect. midtop = self.rect.midbottom
+        self.bullet_rect.midtop = self.rect.midbottom
 
         self.rect.midtop = self.screen_rect.midtop
 
@@ -27,7 +27,7 @@ class EnemyShip:
             "HP: " + str(self.hp), True, (30, 30, 30)
         )
         self.hp_rect = self.hp_image.get_rect()
-        self.hp_rect.midtop = self.rect.midbottom
+        self.hp_rect.midbottom = self.rect.midbottom
 
         self.is_dead = False
 

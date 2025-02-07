@@ -49,6 +49,14 @@ text_font = pygame.font.SysFont(None, 36)
 text_color = (30, 30, 30)
 text_hp = text_font.render("HP: " + str(ship.hp), True, text_color)
 text_mp = text_font.render("MP: " + str(ship.mp), True, text_color)
+
+text_win = pygame.font.SysFont(None, 120).render("You win", True, (255, 0, 0))
+text_win_rect = text_win.get_rect()
+text_lose = pygame.font.SysFont(None, 120).render("You lose", True, (255, 0, 0))
+text_lose_rect = text_lose.get_rect()
+text_win_rect.center = screen.get_rect().center
+text_lose_rect.center = screen.get_rect().center
+
 text_hp_rect = text_hp.get_rect()
 text_mp_rect = text_mp.get_rect()
 text_hp_rect.midtop = screen.get_rect().midtop
@@ -122,25 +130,23 @@ while True:
     dingdong.place()
     dingdong.victory(ship)
 
-    if dingdong.rect.x == ship.rect.x:
-        enemy_bullet_list.append(Weapon(dingdong, "images/bullet.png", screen))
+    if -1 <= dingdong.rect.x - ship.rect.x <= 1:
+        new_bullet = Weapon(dingdong, "images/叮咚鸡.png", screen, speed=8)
+        new_bullet.rect.midtop = dingdong.rect.midbottom
+        enemy_bullet_list.append(new_bullet)
 
     for enemy_bullet in enemy_bullet_list:
         screen.blit(enemy_bullet.image, enemy_bullet.rect)
-        enemy_bullet.rect.y += 1
+        enemy_bullet.rect.y += enemy_bullet.speed
 
     screen.blit(text_hp, text_hp_rect)
     screen.blit(text_mp, text_mp_rect)
 
     if dingdong.is_dead:
         enemy_bullet_list.clear()
-        screen.blit(
-            pygame.font.SysFont(None, 100).render(
-                "You win", True, (255, 0, 0)
-            ),(600, 300)
-        )
+        screen.blit(text_win, text_win_rect)
         if not dingdong_played:
-            time.sleep(0.5)
+            time.sleep(0.2)
             pygame.mixer.Sound("audio/win.wav").play()
             dingdong_played = True
 
@@ -184,6 +190,8 @@ while True:
                 )
             )
             otto.rect = otto.image.get_rect()
+            screen.blit(text_lose, text_win_rect)
+            pygame.display.flip()
 
     pygame.display.flip()
     clock.tick(screen_setting.frequency)
